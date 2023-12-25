@@ -1,66 +1,26 @@
 import java.util.Scanner;
 
-public class CN8T {
+public class CN8T extends Thread {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter The Number of Packets : ");
-        int n = scanner.nextInt();
         int tokens = 0;
-        int bsize = 0;
-        System.out.print("Enter The Bucket Size : ");
-        bsize = scanner.nextInt();
-        tokens = bsize;
-        System.out.print("Enter The Outgoing Rate : ");
-        int outrate = scanner.nextInt();
-        int[] packets = new int[n];
-        System.out.println("Enter The Packet Sizes in Order ");
+        int rate = 3;
+        int capacity = 10;
+        int n;
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter the number of requests");
+        n = in.nextInt();
+        System.out.println("Enter the number of packets per request");
+        int requests[] = new int[n];
+        for (int i = 0; i < n; i++)
+            requests[i] = in.nextInt();
         for (int i = 0; i < n; i++) {
-            packets[i] = scanner.nextInt();
-        }
-        int i = 0, cycle = 0, remains = 0, sent = 0;
-        boolean flag = false;
-        System.out.println("Cycle\tPackets\tSent\tRemains");
-        while (true) {
-            cycle++;
-            tokens = bsize - remains;
-            if (packets[i] <= tokens) {
-                if (remains + packets[i] <= outrate) {
-                    sent = remains + packets[i];
-                    remains = 0;
-                } else {
-                    remains += (packets[i] - outrate);
-                    sent = outrate;
-                }
-                if (!flag) {
-                    System.out.println(cycle + "\t" + packets[i] + "\t" + sent + "\t" + remains);
-                    packets[i] = 0;
-                } else
-                    System.out.println(cycle + "\t---\t" + sent + "\t" + remains);
-            } else {
-                remains = bsize;
-                if (remains <= outrate) {
-                    sent = remains;
-                    remains = 0;
-                } else {
-                    remains -= outrate;
-                    sent = outrate;
-                }
-                if (!flag) {
-                    System.out.println(cycle + "\t" + packets[i] + "\t" + sent + "\t" + remains);
-                    packets[i] -= tokens;
-                } else
-                    System.out.println(cycle + "\t---\t" + sent + "\t" + remains);
-            }
-            if (packets[i] != 0)
-                continue;
-            else if (i == (packets.length - 1)) {
-                flag = true;
-                if (remains == 0) {
-                    break;
-                }
+            tokens = Math.min(tokens + rate, capacity);
+            if (requests[i] <= tokens) {
+                tokens -= requests[i];
+                System.out.println("Packet " + (i + 1) + " is transmitted");
             } else
-                i++;
+                System.out.println("Packet " + (i + 1) + " is discarded");
+            System.out.println("Current number of tokens : " + tokens);
         }
-        scanner.close();
     }
 }

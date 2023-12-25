@@ -1,49 +1,31 @@
-//CRC-CCITT
-
 import java.util.Scanner;
 
 public class CN3 {
-    static int calCRC(String data) {
-        int crc = 0xFFFF;
-        int polynomial = 0x1021;
-        byte[] bytes = data.getBytes();
-        for (byte b : bytes) {
-            for (int i = 0; i < 8; i++) {
-                boolean bit = ((b >> (7 - i) & 1) == 1);
-                boolean c15 = ((crc >> 15 & 1) == 1);
-                crc <<= 1;
-                if (c15 ^ bit)
-                    crc ^= polynomial;
-            }
-        }
-        crc &= 0xffff;
-        return crc;
-    }
-
-    static String encode(String data) {
-        int crc = calCRC(data);
-        return data + Integer.toHexString(crc);
-    }
-
-    static boolean verify(String data) {
-        int crc = calCRC(data.substring(0, data.length() - 4));
-        int crc2 = Integer.parseInt(data.substring(data.length() - 4), 16);
-        return crc == crc2;
+    static String calCRC(String data, String poly, boolean error) {
+        StringBuffer rem = new StringBuffer(data);
+        if (!error)
+            for (int i = 0; i < poly.length() - 1; i++)
+                rem.append("0");
+        for (int i = 0; i < rem.length() - poly.length() + 1; i++)
+            if (rem.charAt(i) == '1')
+                for (int j = 0; j < poly.length(); j++)
+                    rem.setCharAt(i + j, (rem.charAt(i + j) == poly.charAt(j)) ? '0' : '1');
+        return rem.substring(rem.length() - poly.length() + 1);
     }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        System.out.print("Enter the data to be sent : ");
+        System.out.print("Enter the data to be sent in bits : ");
         String data = in.next();
-        String encoded = encode(data);
+        String poly = "10000100010001010";
+        String encoded = data + calCRC(data, poly, false);
         System.out.println("Encoded data : " + encoded);
         System.out.print("Enter the data that was received : ");
         String received = in.next();
-        if (verify(received))
+        String recString = calCRC(received, poly, true);
+        if (Integer.parseInt(recString, 2) == 0)
             System.out.println("Data is correct.");
         else
             System.out.println("Data is incorrect.");
     }
 }
-
-// change top csg
