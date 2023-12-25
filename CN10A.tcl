@@ -30,7 +30,7 @@ $ns color 1 Blue
 $ns duplex-link $n0 $n1 1Mb 10ms DropTail
 $ns duplex-link $n1 $n2 1Mb 10ms DropTail
 
-$ns duplex-link-op $n0 $n1 orient right1
+$ns duplex-link-op $n0 $n1 orient right
 $ns duplex-link-op $n1 $n2 orient right
 
 $ns queue-limit $n0 $n1 10
