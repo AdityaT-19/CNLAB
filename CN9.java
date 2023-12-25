@@ -1,4 +1,4 @@
-import java.util.Random;
+
 
 public class CN9 {
     public static void main(String args[]) {
@@ -10,7 +10,6 @@ public class CN9 {
 
         int queLen = 0;
         double dropPro = minPro;
-        Random rand = new Random();
         for (int i = 0; i < maxPac; ++i) {
             if (queLen == queSize) {
                 System.out.println("Packet dropped ( Queue Full ) ");
